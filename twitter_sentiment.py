@@ -1,5 +1,6 @@
 import tweepy
 from textblob import TextBlob
+import json
 
 # Step 1 - Authenticate
 consumer_key= 'DjZQINSdfCpZ54nxlG6W5g'
@@ -13,20 +14,37 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-#Step 3 - Retrieve Tweets
+#This is a basic listener that just prints received tweets to stdout.
+class StdOutListener(tweepy.StreamListener):
+    counter = 0 
+    def on_data(self, data):
+        tweet = json.loads(data)
+        analysis = TextBlob(tweet['text'])
+        print(tweet['text'])
+        print(analysis.sentiment)
+        print('-------------------------------------------------------------')
+        return True
+
+    def on_error(self, status):
+        print(status)
+        
+    def on_status(self, status):
+        global counter
+        counter = counter + 1
+        if counter < 5:
+            return True
+        else:
+            return False
+
+
+myStream = tweepy.Stream(auth = api.auth, listener = StdOutListener())
+myStream.filter(track = ["Trump"], languages=["en"])
+
+
 public_tweets = api.search('Trump')
-
-
-
-#CHALLENGE - Instead of printing out each tweet, save each Tweet to a CSV file
-#and label each one as either 'positive' or 'negative', depending on the sentiment 
-#You can decide the sentiment polarity threshold yourself
-
 
 for tweet in public_tweets:
     print(tweet.text)
-    
-    #Step 4 Perform Sentiment Analysis on Tweets
     analysis = TextBlob(tweet.text)
     print(analysis.sentiment)
-    print("")
+    print('-------------------------------------------------------------')
