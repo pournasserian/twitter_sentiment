@@ -3,11 +3,11 @@ from textblob import TextBlob
 import json
 
 # Step 1 - Authenticate
-consumer_key= 'DjZQINSdfCpZ54nxlG6W5g'
-consumer_secret= 'bvMPkOJo65KCXKqNsmCYEXYiGCvXqh1NPI7iMNqR9Q'
+consumer_key= 'KNqXZEmCJJEtIHyN6hTYWzmAv'
+consumer_secret= 'Hg0FtDHeOahSpOTjPIuiDLPRSFCZkr4PZwduSUTKmc6gC7OtWK'
 
-access_token='278647040-sgX4F2mbN4xYcfWVmJk6qGaXg8uu7PlfsokyU231'
-access_token_secret='Q3EIeuiG0PAoXzSaK6Eyd4gDMD8qTef40yNeddAriw'
+access_token='278647040-sBWFMwsnCDP6kG5UDSuIXvbuJoyQUdJBihiilWR1'
+access_token_secret='oPcpzqH4D5HhO5JEgowEv8eM9XWDD07gNOrssBLE37dHw'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -19,13 +19,14 @@ class StdOutListener(tweepy.StreamListener):
     counter = 0 
     def on_data(self, data):
         tweet = json.loads(data)
-        analysis = TextBlob(tweet['text'])
-        print(tweet['text'])
-        print(analysis.sentiment)
-        print('-------------------------------------------------------------')
+        #analysis = TextBlob(tweet['text'])
+        print(tweet['text'].encode('utf-8'))
+        #print(analysis.sentiment)
+        #print('-------------------------------------------------------------')
         return True
 
     def on_error(self, status):
+        #print('11111111111111111')
         print(status)
         
     def on_status(self, status):
@@ -37,14 +38,17 @@ class StdOutListener(tweepy.StreamListener):
             return False
 
 
-myStream = tweepy.Stream(auth = api.auth, listener = StdOutListener())
-myStream.filter(track = ["Trump"], languages=["en"])
+#myStream = tweepy.Stream(auth = api.auth, listener = StdOutListener())
+#myStream.filter(track = ["Trump"], languages=["en"])
 
 
-public_tweets = api.search('Trump')
+public_tweets = api.search('Iran')
 
 for tweet in public_tweets:
-    print(tweet.text)
-    analysis = TextBlob(tweet.text)
-    print(analysis.sentiment)
-    print('-------------------------------------------------------------')
+	line = tweet.text
+	h = tweet.entities.get('hashtags')
+	#print(line.encode('utf-8'))
+	print(h)
+	#analysis = TextBlob(tweet.text)
+	#print(analysis.sentiment)
+	print('-------------------------------------------------------------')
